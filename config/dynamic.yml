@@ -1,6 +1,6 @@
 http:
   routers:
-    traefik:
+    proxy:
       rule: "Host(`proxy.apollo.localhost`)"
       service: "api@internal"
       tls:

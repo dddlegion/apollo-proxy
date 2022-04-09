@@ -20,12 +20,6 @@ services:
       - ./config/static.yml:/etc/traefik/traefik.yml:ro
       - ./config/dynamic.yml:/etc/traefik/dynamic.yml:ro
       - ./certs:/etc/certs:ro
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=apollo"
-      - "traefik.http.routers.apollo.rule=Host(`proxy.${HOST}`)"
-      - "traefik.http.routers.apollo.entrypoints=https,http"
-      - "traefik.http.services.apollo.loadbalancer.server.port=8080"
     networks:
       - apollo
 
