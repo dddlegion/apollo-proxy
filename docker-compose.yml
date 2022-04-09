@@ -9,19 +9,22 @@ services:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
+      - "--entrypoints.http.address=:80"
+      - "--entrypoints.https.address=:443"
     restart: always
     ports:
       - "80:80"
-# Enables traefik dashboard on http://localhost:8080/
-#      - "8080:8080" # The Web UI (enabled by --api)
+      - "443:443"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./config/static.yml:/etc/traefik/traefik.yml:ro
+      - ./config/dynamic.yml:/etc/traefik/dynamic.yml:ro
+      - ./certs:/etc/certs:ro
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=apollo"
       - "traefik.http.routers.apollo.rule=Host(`proxy.${HOST}`)"
-      - "traefik.http.routers.apollo.entrypoints=web"
+      - "traefik.http.routers.apollo.entrypoints=https,http"
       - "traefik.http.services.apollo.loadbalancer.server.port=8080"
     networks:
       - apollo
