@@ -1,26 +1,31 @@
-version: '3.5'
+version: '3.9'
 
 services:
   proxy:
     container_name: apollo_proxy
+    image: traefik:v2.6
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
     restart: always
-    image: traefik:1.7
-    command: --api --docker # Enables the web UI and tells Traefik to listen to docker
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+# Enables traefik dashboard on http://localhost:8080/
+#      - "8080:8080" # The Web UI (enabled by --api)
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
-      - ./config/traefik.dev.toml:/etc/traefik/traefik.toml
-      - ./config/ssl:/etc/traefik/ssl
+      - /var/run/docker.sock:/var/run/docker.sock
     labels:
-      - traefik.enable=true
-      - traefik.docker.network=traefik
-      - traefik.frontend.rule=Host:traefik.${HOST}
-      - traefik.port=8080
+      - "traefik.enable=true"
+      - "traefik.docker.network=apollo"
+      - "traefik.http.routers.apollo.rule=Host(`proxy.${HOST}`)"
+      - "traefik.http.routers.apollo.entrypoints=web"
+      - "traefik.http.services.apollo.loadbalancer.server.port=8080"
     networks:
-      - traefik
+      - apollo
 
 networks:
-  traefik:
-    name: traefik
+  apollo:
+    name: apollo
