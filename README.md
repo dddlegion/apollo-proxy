@@ -17,3 +17,4 @@ This repository contains a configuration for reverse proxy based on Traefik v2 t
 - `make up` - runs all containers inside docker-compose.yml file.
 - `make stop` - stops all containers.
 - `make down` - stops and removes all containers.
+- `make ssl-certs` - generates SSL certificates.
