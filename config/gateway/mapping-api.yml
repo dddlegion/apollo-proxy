@@ -1,0 +1,6 @@
+apiVersion: ambassador/v1
+kind: Mapping
+name: useraccess-service_mapping
+host: api.apollo.localhost
+prefix: /useraccess
+service: useraccess.apollo.localhost

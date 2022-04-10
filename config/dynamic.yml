@@ -1,16 +1,16 @@
 http:
   routers:
     proxy:
-      rule: "Host(`proxy.apollo.localhost`)"
+      rule: "Host(`proxy.${HOST}`)"
       service: "api@internal"
       tls:
         domains:
-          - main: "apollo.localhost"
+          - main: "${HOST}"
             sans:
-              - "*.apollo.localhost"
-          - main: "apollo.local"
+              - "*.${HOST}"
+          - main: "${INTERNAL_HOST}"
             sans:
-              - "*.apollo.local"
+              - "*.${INTERNAL_HOST}"
 
 tls:
   certificates:

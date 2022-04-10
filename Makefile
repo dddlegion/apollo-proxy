@@ -7,5 +7,6 @@ stop:
 down:
 	docker-compose down
 
+# TODO: put the hosts from .env file
 ssl-certs:
 	mkcert -cert-file certs/local-cert.pem -key-file certs/local-key.pem "apollo.localhost" "*.apollo.localhost" "apollo.local" "*.apollo.local"

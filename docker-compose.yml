@@ -20,9 +20,29 @@ services:
       - ./config/static.yml:/etc/traefik/traefik.yml:ro
       - ./config/dynamic.yml:/etc/traefik/dynamic.yml:ro
       - ./certs:/etc/certs:ro
+      - ./logs/traefik:/var/log
     networks:
-      - apollo
+      - apollo-external
+      - apollo-internal
+    
+  gateway:
+    container_name: apollo_gateway
+    image: quay.io/datawire/ambassador:0.86.1
+    command: --port 8080
+    volumes:
+      - ./config/gateway:/ambassador/ambassador-config
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gateway.rule=Host(`api.${HOST}`)"
+      - "traefik.http.routers.gateway.service=gateway"
+      - "traefik.http.services.gateway.loadbalancer.server.port=8080"
+      - "traefik.docker.network=apollo-external"
+    networks:
+      - apollo-internal
 
 networks:
-  apollo:
-    name: apollo
+  # docker network create apollo-external
+  apollo-external:
+    external: true
+  apollo-internal:
+    external: false
